@@ -27,14 +27,18 @@ class Product{
             'no'=>'001001',
             'unit'=>'册',
             'price'=>998.00,
-            'can_use' => [
+            'discount' => [
             ]
+
         ],
         '001002'=>[
             'name'=>'2019北京世园会纪念银章大全40g',
             'no'=>'001002',
             'unit'=>'盒',
             'price'=>1380.00,
+            'discount' => [
+                '0090'
+            ]
         ],
         '003001'=>[
             'name'=>'招财进宝',
@@ -42,7 +46,7 @@ class Product{
             'unit'=>'条',
             'price'=>1580.00,
             'discount' => [
-
+                '0095'
             ]
         ],
         '003002'=>[
@@ -60,7 +64,8 @@ class Product{
             'unit'=>'套',
             'price'=>998.00,
             'discount' => [
-
+                '002000',
+                '001000',
             ]
         ],
         '002001'=>[
@@ -69,7 +74,9 @@ class Product{
             'unit'=>'条',
             'price'=>1080.00,
             'discount' => [
-
+                '0095',
+                '000003',
+                '000004',
             ]
         ],
         '002003'=>[
@@ -78,7 +85,10 @@ class Product{
             'unit'=>'套',
             'price'=>698.00,
             'discount' => [
-
+                '0090',
+                '001000',
+                '002000',
+                '003000',
             ]
         ],
     ];
@@ -101,19 +111,63 @@ class Product{
         $this->no = $product['no'];
         $this->unit = $product['unit'];
         $this->price = $product['price'];
+        $this->discount = $product['discount'];
+    }
+
+    public function setNumber($number){
+        $this->number = $number;
     }
 
     public function getTotalPrice(){
         return $this->price * $this->number;
     }
 
-    public function getDiscount(){
-        return $this->price * $this->number;
+    public function getDiscountMoney(){
+        $total_price = $this->price * $this->number;
+        $discount = $this->discount;
+        $discount_money = 0;
+        foreach($discount as  $item){
+            if(in_array($item,GrandOpening::GRANDTYPE)){
+                switch ($item){
+                    case '000003':
+                        if($this->number >3 ){
+                            if($this->price/2 > $discount_money){
+                                $discount_money = $this->price/2;
+                            }
+                        }
+                        break;
+                    case '000004':
+                        if($this->number >4 && $this->price > $discount_money){
+                            $discount_money = $this->price;
+                        }
+                        break;
+                    default:
+                        $discount_money_count =intval($total_price/GrandOpening::GRANDTYPE[$item]['money'])*GrandOpening::GRANDTYPE[$item]['cutmoney'];
+                        if($discount_money_count > $discount_money){
+                            $discount_money = $discount_money_count;
+                        }
+                        break;
+
+                }
+            }
+
+            if(isset(SaleType::SALETYPE[$item])){
+                $discount_money_count = $total_price * SaleType::SALETYPE[$item]['ratio'];
+                if($discount_money_count > $discount_money){
+                    $discount_money = $discount_money_count;
+                }
+            }
+
+        }
+
+        return $discount_money;
+
+
     }
 
 
-    public function discountRules(){
-
+    public function discountMoney(){
+        $this->discount;
     }
 
 }
