@@ -84,3 +84,5 @@ class Index {
 
 $output = new Index();
 $output->order();
+
+echo '运行成功！';
