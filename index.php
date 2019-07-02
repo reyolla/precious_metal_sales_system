@@ -5,33 +5,44 @@
  * Date: 2019/7/2
  * Time: 16:17
  */
-namespace order;
 
-require 'Model/Product.php';
-
-use Model\Order;
+require_once 'Model/Product.php';
+require_once 'Model/Order.php';
+require_once 'Model/VipUser.php';
+//require 'Model/SaleType.php';
 use Model\Product;
+use Model\Order;
+use Model\SaleType;
+use Model\VipUser;
 
 class Index {
 
-    public function index(){
+    public function order(){
 
        $product = new Product();
-//       print_r($product::PRODUCT);
 
        //读取json 文件
         $json = file_get_contents('test/sample_command.json');
-//        print_r($json);
         $info = json_decode($json);
         $order = new Order();
-        $order->setItems($info);;
-        $total_price = $order->calAmount();
-
-        $member =
+        $order->setItems($info->items);
+//        print_r($order);
 
 
-        print_r($info->orderId);
+        $discount = $info->discountCards;
+        $sale_type = new SaleType();
+        $discounts = $sale_type->getDiscountsByNames($discount); //获取优惠
+        $order->setDiscount($discounts); // 设置优惠券
+        $total_price = $order->calAmountList();
+        $total_minus_fess = $order->minusFeeList();
+        $total_discount = $order->discountFeeList();
+        $total_discount = $order->payFee();
 
+        $member = new VipUser();
+        
+        print_r($total_discount);
+
+        $string = '';
         //输出txt文件
 
 
@@ -43,4 +54,4 @@ class Index {
 }
 
 $output = new Index();
-$output->index();
+$output->order();

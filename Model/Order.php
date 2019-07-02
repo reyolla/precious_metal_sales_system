@@ -1,6 +1,8 @@
 <?php
 namespace Model;
-require 'Product.php';
+require_once 'Product.php';
+use Model\Product;
+
 /**
  * Created by PhpStorm.
  * User: alloyer
@@ -20,8 +22,9 @@ class Order{
     {
         foreach($items as $value){
             $product = new Product();
-            $product = $product->getProductByNo($value->product);
-            $product['number'] = $value->amount;
+            $product->setProductByNo($value->product);
+
+            $product->number = $value->amount;
             array_push($this->items,$product);
         }
     }
@@ -36,6 +39,7 @@ class Order{
         $total_price = 0;
         $data = [];
         foreach($this->items as $item){
+            $item = (array)$item;
             $price = 0;
             $price += $item['price'] * $item['number'];
             $item = [
@@ -56,10 +60,12 @@ class Order{
         $data = [];
         $total_minus_fee= 0;
         foreach ($this->items as $item) {
+            $item = (array)$item;
             $product = new Product();
+            $product->number = $item['number'];
             $product->setAllByNo($item['no']);
             if(!empty($this->discount)){
-                $product->discount = $this->discount;
+                $product->use_discount= $this->discount;
             }
             $product->getDiscountMoney();
             if(!empty($product->minu_fee) && $product->minu_fee != 0){
@@ -78,17 +84,19 @@ class Order{
         $data = [];
         $total_discount_fee = 0;
         foreach ($this->items as $item) {
+            $item = (array)$item;
             $product = new Product();
+            $product->number = $item['number'];
             $product->setAllByNo($item['no']);
             if(!empty($this->discount)){
-                $product->discount = $this->discount;
+                $product->use_discount= $this->discount;
             }
             $product->getDiscountMoney();
             if(!empty($product->discount_money) && $product->discount_money != 0 ){
                 $item['no'] = $product->no;
                 $item['name'] = $product->name;
                 $item['discount_money'] = $product->discount_money;
-                $total_discount_fee += $item['minus_fee'];
+                $total_discount_fee += $item['discount_money'];
                 array_push ($data,$item);
             }
         }

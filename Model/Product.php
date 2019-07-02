@@ -1,5 +1,11 @@
 <?php
 namespace Model;
+
+require_once 'SaleType.php';
+require_once 'GrandOpening.php';
+use Model\GrandOpening;
+use Model\SaleType;
+
 /**
  * Created by PhpStorm.
  * User: alloyer
@@ -21,9 +27,11 @@ class Product{
     public $discount_money = 0; //打折金额
     public $minu_fee = 0; //优惠金额
 
+    public $use_discount = 0;
 
 
-    const PRODUCT = [
+
+    public  $PRODUCT = [
         '001001'=> [
             'name'=>'世园会五十国钱币册',
             'no'=>'001001',
@@ -95,20 +103,25 @@ class Product{
         ],
     ];
 
-    public function getAllProduct(){
-        return self::PRODUCT;
-    }
+//    public function getAllProduct(){
+//        return self::$PRODUCT;
+//    }
 
 
 
-    public static function getProductByNo($no){
-        $products = self::PRODUCT[$no];
+    public function setProductByNo($no){
 
-        return $products;
+        $products = $this->PRODUCT[$no];
+        $this->name = $products['name'];
+        $this->no = $products['no'];
+        $this->unit = $products['unit'];
+        $this->price = $products['price'];
+        $this->discount = $products['discount'];
+
     }
 
     public function setAllByNo($no){
-        $product = $this->getProductByNo($no);
+        $product = $this->PRODUCT[$no];
         $this->name = $product['name'];
         $this->no = $product['no'];
         $this->unit = $product['unit'];
@@ -129,7 +142,8 @@ class Product{
         $discount = $this->discount;
         $discount_money = 0;
         foreach($discount as  $item){
-            if(in_array($item,GrandOpening::GRANDTYPE)){
+
+            if(isset(GrandOpening::GRANDTYPE[$item])){
                 switch ($item){
                     case '000003':
                         if($this->number >3 ){
@@ -148,7 +162,11 @@ class Product{
                         }
                         break;
                     default:
-                        $discount_money_count =intval($total_price/GrandOpening::GRANDTYPE[$item]['money'])*GrandOpening::GRANDTYPE[$item]['cutmoney'];
+//                        echo $this->price; echo '   ';
+//                        echo $this->number; echo '   ';
+//                        echo intval($this->getTotalPrice());
+//                        echo intval($this->getTotalPrice()/GrandOpening::GRANDTYPE[$item]['money']); echo '   ';
+                        $discount_money_count =intval($this->getTotalPrice()/GrandOpening::GRANDTYPE[$item]['money'])*GrandOpening::GRANDTYPE[$item]['cutmoney'];
                         if($discount_money_count > $discount_money){
                             $discount_money = $discount_money_count;
                             $this->minu_fee = $discount_money;
@@ -159,25 +177,47 @@ class Product{
                 }
             }
 
-            if(isset(SaleType::SALETYPE[$item])){
-                $discount_money_count = $total_price * (1-SaleType::SALETYPE[$item]['ratio']);
-                if($discount_money_count > $discount_money){
-                    $discount_money = $discount_money_count;
-                    $this->discount_money = $discount_money;
-                    $this->minu_fee = 0;
+            if(isset(SaleType::SALETYPE[$item]) && !empty($this->use_discount) ){
+//             if($this->no == '001002'){
+////                 print_r($this);
+//
+//             }
+                foreach($this->use_discount as $value){
+                    if($this->no == '001002'){
+//
+             }
+                    if(!empty(SaleType::SALETYPE[$item])){
+//                        if($this->no == '001002'){
+////
+//                            echo 111;
+//                        }
+                        $discount_money_count = $total_price * (1-SaleType::SALETYPE[$item]['ratio']);
+
+                        if($discount_money_count > $this->discount_money){
+                            $discount_money = $discount_money_count;
+                            $this->discount_money = $discount_money;
+                            $this->minu_fee = 0;
+                            if($this->no == '001002'){
+////
+//                               print_r($this);
+                            }
+//                            echo $discount_money_count;
+                        }
+                    }
                 }
+
             }
 
         }
+//        print_r($this);
 
-        return $discount_money;
 
-
+//        return $discount_money;
     }
 
 
-    public function discountMoney(){
-        $this->discount;
-    }
+//    public function discountMoney(){
+//        $this->discount;
+//    }
 
 }

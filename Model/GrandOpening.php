@@ -1,4 +1,5 @@
 <?php
+namespace Model;
 /**
  * Created by PhpStorm.
  * User: system.err
@@ -6,7 +7,6 @@
  * Time: 17:13
  */
 
-namespace Model;
 /**
  * Created by PhpStorm.
  * User: alloyer
