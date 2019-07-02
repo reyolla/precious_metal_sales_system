@@ -28,18 +28,47 @@ class Order{
         $this->discount = $val;
     }
 
-    public function calAmount(){
+    public function calAmountList(){
         //计算金额
-        $total_prace = 0;
+        $total_price = 0;
+        $data = [];
         foreach($this->items as $item){
-//            $item[]
             $price = 0;
             $price += $item['price'] * $item['number'];
-            in_array($this->discount,$item['discount']) && $price = $price * $this->ratio;
-            //
-            $total_prace += $price;
+            $item = [
+                'no' => $item['no'],
+                'name' => $item['name'],
+                'number' => $item['number'],
+                'price' => $item['price'],
+                'total_price' => $price
+            ];
+            $total_price += $price;
+            array_push($data,$item);
         }
 
-        return $total_prace;
+        return ['total_price'=>$total_price,'data'=>$data];
     }
+
+    public function minusFeeList(){
+        $data = [];
+        $total_minus_fee= 0;
+        foreach ($this->items as $item) {
+            $product = new Product();
+            $product->setAllByNo($item['no']);
+            if(!empty($this->discount)){
+                $product->discount = $this->discount;
+            }
+            $product->getDiscountMoney();
+            if(!empty($product->minu_fee)){
+                $item['no'] = $product->no;
+                $item['name'] = $product->name;
+                $item['minus_fee'] = $product->minu_fee;
+                $total_minus_fee += $item['minus_fee'];
+                array_push ($data,$item);
+            }
+        }
+        return ['total_minus_fee'=>$total_minus_fee,'data'=>$data];
+    }
+
+
 }

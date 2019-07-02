@@ -18,6 +18,8 @@ class Product{
 
     public $discount; //折扣券
     public $number;   //数量
+    public $discount_money = 0; //打折金额
+    public $minu_fee = 0; //优惠金额
 
 
 
@@ -133,18 +135,24 @@ class Product{
                         if($this->number >3 ){
                             if($this->price/2 > $discount_money){
                                 $discount_money = $this->price/2;
+                                $this->minu_fee = $discount_money;
+                                $this->discount_money = 0;
                             }
                         }
                         break;
                     case '000004':
                         if($this->number >4 && $this->price > $discount_money){
                             $discount_money = $this->price;
+                            $this->minu_fee = $discount_money;
+                            $this->discount_money = 0;
                         }
                         break;
                     default:
                         $discount_money_count =intval($total_price/GrandOpening::GRANDTYPE[$item]['money'])*GrandOpening::GRANDTYPE[$item]['cutmoney'];
                         if($discount_money_count > $discount_money){
                             $discount_money = $discount_money_count;
+                            $this->minu_fee = $discount_money;
+                            $this->discount_money = 0;
                         }
                         break;
 
@@ -155,6 +163,8 @@ class Product{
                 $discount_money_count = $total_price * SaleType::SALETYPE[$item]['ratio'];
                 if($discount_money_count > $discount_money){
                     $discount_money = $discount_money_count;
+                    $this->discount_money = $discount_money;
+                    $this->minu_fee = 0;
                 }
             }
 
