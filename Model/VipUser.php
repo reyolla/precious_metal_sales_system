@@ -22,30 +22,32 @@ class VipUser
     public $cardno;  //卡号
     public $point;  //积分
     public $newPoint = 0;
+    public $oldlevel ;
 
     const VIPUSER = [
-        '000001'=> [
+        '6236609999'=> [
             'name'=>'马丁',
             'level'=>1,
             'levelname'=>'普卡',
             'cardno'=>'6236609999',
             'point'=>9860
         ],
-        'name'=>'王立',
-        '000002'=> [
+
+        '6630009999'=> [
+            'name'=>'王立',
             'level'=>2,
             'levelname'=>'金卡',
             'cardno'=>'6630009999',
             'point'=>48860
         ],
-        '000003'=> [
+        '8230009999'=> [
             'name'=>'李想',
             'level'=>3,
             'levelname'=>'白金卡',
             'cardno'=>'8230009999',
             'point'=>98860
         ],
-        '000004'=> [
+        '9230009999'=> [
             'name'=>'张三',
             'level'=>4,
             'levelname'=>'钻石卡',
@@ -80,19 +82,21 @@ class VipUser
         $this->point = $data['point'];
     }
     public function getLevel(){
+        $this->oldlevel = $this->level;
         if($this->point>100000){
             $this->level = 4;
             return '普卡';
         }elseif($this->point>50000){
             $this->level = 3;
-            return '金卡';
+            return '白金卡';
         }elseif($this->point > 10000){
             $this->level = 2;
-            return '白金卡';
+            return '金卡';
         }else{
             $this->level = 1;
             return '钻石卡';
         }
+
     }
 
 }
