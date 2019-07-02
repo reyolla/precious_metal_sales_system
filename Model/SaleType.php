@@ -29,6 +29,11 @@ class SaleType
         ],
     ];
 
+    /**
+     * @param $names
+     * @return array
+     * 根据名称获取优惠券
+     */
     public function getDiscountsByNames($names){
         $result = [];
         foreach($names as $name){

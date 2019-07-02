@@ -23,17 +23,24 @@ class Order{
         foreach($items as $value){
             $product = new Product();
             $product->setProductByNo($value->product);
-
             $product->number = $value->amount;
             array_push($this->items,$product);
         }
     }
 
+    /**
+     * 设置订单优惠券种类
+     * @param $val
+     */
     public function setDiscount($val){
         //没有设置成固定1
         $this->discount = $val;
     }
 
+    /**
+     * 计算总金额
+     *
+     */
     public function calAmountList(){
         //计算金额
         $total_price = 0;
@@ -56,6 +63,10 @@ class Order{
         return ['total_price'=>$total_price,'data'=>$data];
     }
 
+    /**
+     * 计算开门红优惠清单
+     * @return array
+     */
     public function minusFeeList(){
         $data = [];
         $total_minus_fee= 0;
@@ -79,7 +90,10 @@ class Order{
         $this->total_minus_fee = $total_minus_fee;
         return ['total_minus_fee'=>$total_minus_fee,'data'=>$data];
     }
-
+    /**
+     * 折扣优惠清单
+     *
+     */
     public function discountFeeList(){
         $data = [];
         $total_discount_fee = 0;
@@ -104,7 +118,10 @@ class Order{
         return ['total_discount_fee'=>$total_discount_fee,'data'=>$data];
 
     }
-
+    /**
+     * 合计金额
+     *
+     */
     public function payFee(){
         return $this->total_price - $this->total_minus_fee - $this->total_discount_fee ;
     }

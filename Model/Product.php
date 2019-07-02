@@ -103,12 +103,11 @@ class Product{
         ],
     ];
 
-//    public function getAllProduct(){
-//        return self::$PRODUCT;
-//    }
 
-
-
+    /**
+     * 设置产品信息
+     * @param $no
+     */
     public function setProductByNo($no){
 
         $products = $this->PRODUCT[$no];
@@ -120,6 +119,10 @@ class Product{
 
     }
 
+    /**
+     * @param $no
+     * 设置产品信息
+     */
     public function setAllByNo($no){
         $product = $this->PRODUCT[$no];
         $this->name = $product['name'];
@@ -133,10 +136,18 @@ class Product{
         $this->number = $number;
     }
 
+    /**
+     * @return float|int
+     * 计算总价
+     */
     public function getTotalPrice(){
         return $this->price * $this->number;
     }
 
+    /**
+     *
+     * 计算折扣金及开门红优惠金额
+     */
     public function getDiscountMoney(){
         $total_price = $this->price * $this->number;
         $discount = $this->discount;
@@ -162,10 +173,6 @@ class Product{
                         }
                         break;
                     default:
-//                        echo $this->price; echo '   ';
-//                        echo $this->number; echo '   ';
-//                        echo intval($this->getTotalPrice());
-//                        echo intval($this->getTotalPrice()/GrandOpening::GRANDTYPE[$item]['money']); echo '   ';
                         $discount_money_count =intval($this->getTotalPrice()/GrandOpening::GRANDTYPE[$item]['money'])*GrandOpening::GRANDTYPE[$item]['cutmoney'];
                         if($discount_money_count > $discount_money){
                             $discount_money = $discount_money_count;
@@ -178,46 +185,18 @@ class Product{
             }
 
             if(isset(SaleType::SALETYPE[$item]) && !empty($this->use_discount) ){
-//             if($this->no == '001002'){
-////                 print_r($this);
-//
-//             }
                 foreach($this->use_discount as $value){
-                    if($this->no == '001002'){
-//
-             }
                     if(!empty(SaleType::SALETYPE[$item])){
-//                        if($this->no == '001002'){
-////
-//                            echo 111;
-//                        }
                         $discount_money_count = $total_price * (1-SaleType::SALETYPE[$item]['ratio']);
-
                         if($discount_money_count > $this->discount_money){
                             $discount_money = $discount_money_count;
                             $this->discount_money = $discount_money;
                             $this->minu_fee = 0;
-                            if($this->no == '001002'){
-////
-//                               print_r($this);
-                            }
-//                            echo $discount_money_count;
                         }
                     }
                 }
-
             }
-
         }
-//        print_r($this);
-
-
-//        return $discount_money;
     }
-
-
-//    public function discountMoney(){
-//        $this->discount;
-//    }
 
 }

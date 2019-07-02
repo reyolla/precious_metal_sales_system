@@ -32,18 +32,15 @@ class Index {
         $sale_type = new SaleType();
         $discounts = $sale_type->getDiscountsByNames($discount); //获取优惠
         $order->setDiscount($discounts); // 设置优惠券
-        $total_price = $order->calAmountList();
-        $total_minus_fess = $order->minusFeeList();
-        $total_discount = $order->discountFeeList();
-        $payfee = $order->payFee();
+        $total_price = $order->calAmountList(); //合计总价
+        $total_minus_fess = $order->minusFeeList(); //开门红优惠总价
+        $total_discount = $order->discountFeeList();//打折券优惠总价
+        $payfee = $order->payFee(); //实付金额
 
         $member = new VipUser();
         $member->setUser($info->memberId);
         $member->setPoint($payfee);
-
-        print_r($member->getLevel());
-        print_r($total_discount);
-
+        //组装打印凭证
         $string = "方鼎银行贵金属购买凭证"." \n\n";
 
         $string .= "销售单号:".$info->orderId."\t 日期:".$info->createTime."\n";

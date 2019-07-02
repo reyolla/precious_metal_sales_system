@@ -55,6 +55,11 @@ class VipUser
             'point'=>198860
         ],
     ];
+
+    /**
+     * @param $money
+     * 计算累计积分
+     */
     public function setPoint($money){
         switch ($this->level){
             case 1:
@@ -81,6 +86,11 @@ class VipUser
         $this->cardno = $data['cardno'];
         $this->point = $data['point'];
     }
+
+    /**
+     * @return string
+     * 计算用户积分等级
+     */
     public function getLevel(){
         $this->oldlevel = $this->level;
         if($this->point>100000){
