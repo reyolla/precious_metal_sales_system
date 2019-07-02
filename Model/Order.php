@@ -12,6 +12,9 @@ class Order{
     private $items = [];
     private $discount;
     private $ratio;
+    private $total_price = 0;
+    private $total_discount_fee = 0;
+    private $total_minus_fee = 0;
 
     public function setItems($items)
     {
@@ -45,7 +48,7 @@ class Order{
             $total_price += $price;
             array_push($data,$item);
         }
-
+        $this->total_price = $total_price;
         return ['total_price'=>$total_price,'data'=>$data];
     }
 
@@ -59,7 +62,7 @@ class Order{
                 $product->discount = $this->discount;
             }
             $product->getDiscountMoney();
-            if(!empty($product->minu_fee)){
+            if(!empty($product->minu_fee) && $product->minu_fee != 0){
                 $item['no'] = $product->no;
                 $item['name'] = $product->name;
                 $item['minus_fee'] = $product->minu_fee;
@@ -67,8 +70,34 @@ class Order{
                 array_push ($data,$item);
             }
         }
+        $this->total_minus_fee = $total_minus_fee;
         return ['total_minus_fee'=>$total_minus_fee,'data'=>$data];
     }
 
+    public function discountFeeList(){
+        $data = [];
+        $total_discount_fee = 0;
+        foreach ($this->items as $item) {
+            $product = new Product();
+            $product->setAllByNo($item['no']);
+            if(!empty($this->discount)){
+                $product->discount = $this->discount;
+            }
+            $product->getDiscountMoney();
+            if(!empty($product->discount_money) && $product->discount_money != 0 ){
+                $item['no'] = $product->no;
+                $item['name'] = $product->name;
+                $item['discount_money'] = $product->discount_money;
+                $total_discount_fee += $item['minus_fee'];
+                array_push ($data,$item);
+            }
+        }
+        $this->total_discount_fee = $total_discount_fee;
+        return ['total_discount_fee'=>$total_discount_fee,'data'=>$data];
 
+    }
+
+    public function payFee(){
+        return $this->total_price - $this->total_minus_fee - $this->total_discount_fee ;
+    }
 }

@@ -160,7 +160,7 @@ class Product{
             }
 
             if(isset(SaleType::SALETYPE[$item])){
-                $discount_money_count = $total_price * SaleType::SALETYPE[$item]['ratio'];
+                $discount_money_count = $total_price * (1-SaleType::SALETYPE[$item]['ratio']);
                 if($discount_money_count > $discount_money){
                     $discount_money = $discount_money_count;
                     $this->discount_money = $discount_money;

@@ -21,6 +21,7 @@ class VipUser
     public $level;    //会员等级
     public $cardno;  //卡号
     public $point;  //积分
+    public $newPoint = 0;
 
     const VIPUSER = [
         '000001'=> [
@@ -55,18 +56,19 @@ class VipUser
     public function setPoint($money){
         switch ($this->level){
             case 1:
-                $this->point += $money*1;
+                $this->newPoint= $money*1;
                 break;
             case 2:
-                $this->point += $money*1.5;
+                $this->newPoint=  $money*1.5;
                 break;
             case 3:
-                $this->point += $money*1.8;
+                $this->newPoint= $money*1.8;
                 break;
             case 4:
-                $this->point += $money*2;
+                $this->newPoint= $money*2;
                 break;
         }
+        $this->point += $this->newPoint;
     }
 
     public function setUser($cardno){
@@ -80,12 +82,16 @@ class VipUser
     public function getLevel(){
         if($this->point>100000){
             $this->level = 4;
+            return '普卡';
         }elseif($this->point>50000){
             $this->level = 3;
+            return '金卡';
         }elseif($this->point > 10000){
             $this->level = 2;
+            return '白金卡';
         }else{
             $this->level = 1;
+            return '钻石卡';
         }
     }
 
